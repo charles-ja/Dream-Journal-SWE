@@ -1,0 +1,24 @@
+name: Merge Dev to Prod
+
+on:
+  push:
+    branches:
+      - dev  # Runs when code is pushed to dev
+
+jobs:
+  merge_dev_to_prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge dev into prod
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git fetch origin
+          git checkout prod
+          git merge --no-ff dev -m "Auto-merge dev into prod"
+          git push origin prod
